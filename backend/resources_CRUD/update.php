@@ -31,9 +31,10 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     
     // Tom: Validate phone
     $input_phone = trim($_POST["Phone"]);
+    $regex = "/(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}( ext. d{3,4})?/";
     if (empty($input_phone)) {
         $Phone = NULL;
-    } elseif (! ctype_digit($input_phone)) {
+    } elseif (!preg_match($regex, $input_phone)) {
         $PhoneNumber_err = "Please enter a valid phone number.";
     } else {
         $Phone = $input_phone;
@@ -103,16 +104,28 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     
     // Tom: Validate SectionID
     $input_sectionID = trim($_POST["SectionID"]);
+    $sql = "SELECT SectionID FROM sections";
+    $sections = mysqli_connect('localhost', 'root', '', 'resources');
+    $stmt = mysqli_prepare($sections, $sql);
+    $sectionID_arr = array();
+    if (mysqli_stmt_execute($stmt)) {
+        $result = mysqli_stmt_get_result($stmt);
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_array($result)) {
+                array_push($sectionID_arr, $row['SectionID']);
+            }
+        }
+    }
     if (empty($input_sectionID)) {
         $SectionID_err = "Please enter the sectionID.";
-    } elseif (! ctype_digit($input_sectionID)) {
+    } elseif (! in_array($input_sectionID, $sectionID_arr)) {
         $SectionID_err = "Please enter a valid sectionID.";
     } else {
         $SectionID = $input_sectionID;
     }
     
     // Check input errors before inserting in database
-    if (empty($ResourceName_err) && empty($SectionID_err)) {
+    if (empty($ResourceName_err) && empty($SectionID_err) && empty($PhoneNumber_err) && empty($Email_err) && empty($Website_err) && empty($Advocacy_err) && empty($Outreach_err) && empty($CommunityCare_err) && empty($TextLine_err) && empty($Description_err)) {
         // Prepare an update statement
         $sql = "UPDATE resources SET ResourceName=?, Phone=?, Email=?, Website=?, Advocacy=?, Outreach=?, CommunityCare=?, Text=?, Description=?, SectionID=? WHERE ResourceID=?";
          
@@ -228,11 +241,8 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
             <div class="row">
                 <div class="col-md-12">
                     <h2 class="mt-5">Update Record</h2>
-<<<<<<< HEAD
-                    <p>Please edit the input values and submit to update the resource record.</p>
-=======
-                    <p>Please edit the input values and submit to update the employee record.</p>
->>>>>>> cab9cff2a1a7a968049d19c01485fecc0a08e2d4
+                    <p>Please edit the input values and submit to update the resource record.</p><br />
+
                     <form action="<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])); ?>" method="post">
                         <div class="form-group">
 							<label>ResourceName</label> <input type="text"

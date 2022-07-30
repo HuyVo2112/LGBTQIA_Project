@@ -15,7 +15,7 @@
 <body>
     <?php
     // Include config file
-    require_once "config.php";
+    require_once "../shared/config.php";
     $param_id = trim($_POST["searchterm"]);
     $sql = "SELECT * FROM resources WHERE ResourceName LIKE '%$param_id%' OR Description LIKE '%$param_id%'";
     $stmt = mysqli_prepare($link, $sql);
