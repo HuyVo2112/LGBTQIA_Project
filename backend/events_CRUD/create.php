@@ -78,6 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
 
+
     // Check input errors before inserting in database
     if (empty($EventName_err) && empty($EventDescription_err) && empty($EventDate_err) && empty($EventImage_err)) {
         // Prepare an insert statement

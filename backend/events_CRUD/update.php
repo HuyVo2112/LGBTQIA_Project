@@ -24,16 +24,20 @@ require_once "../shared/config.php";
 $EventName = $EventDescription = $EventImage = $EventDate = "";
 $EventName_err = $EventDescription_err = $EventImage_err = $EventDate_err = "";
 
+
 // Processing form data when form is submitted
 if (isset($_POST["id"]) && !empty($_POST["id"])) {
     // Get hidden input value
     $id = $_POST["id"];
 
+
     // Validate name
     $input_name = trim($_POST["EventName"]);
     if (empty($input_name)) {
         $EventName_err = "Please enter the event name.";
+
     } elseif (!filter_var($input_name, FILTER_VALIDATE_REGEXP, array(
+
         "options" => array(
             "regexp" => "/^[a-zA-Z\s]+$/"
         )
@@ -48,9 +52,13 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
     if (empty($input_description)) {
         $Description_err = "Please enter some EventDescription.";
         // $EventDescription = NULL;
+
     } else {
         $EventDescription = $input_description;
-    }
+     }
+
+
+
 
     // Huy: Uploading variables
     $targetDir = "../../assets/images/";
@@ -93,6 +101,7 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
 
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "i", $id);
+
 
             // Attempt to execute the prepared statement
             if (mysqli_stmt_execute($stmt)) {
@@ -144,7 +153,8 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
             
             // Close statement
             mysqli_stmt_close($stmt);
-        }
+
+        }   
     }
 
     // Close connection
@@ -156,7 +166,9 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
 
         // Prepare a select statement
         $sql = "SELECT * FROM Events WHERE EventID = ?";
+
         if ($stmt = mysqli_prepare($link, $sql)) {
+
             // Bind variables to the prepared statement as parameters
             // Set parameters
             $param_id = $id;
@@ -174,7 +186,9 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
                     // Retrieve individual field value
                     $EventName = $row["EventName"];
                     $EventDescription = $row["EventDescription"];
+
                 } else {
+
                     // URL doesn't contain valid id. Redirect to error page
                     header("location: ../shared/error.php");
                     exit();
@@ -234,12 +248,14 @@ if (isset($_POST["id"]) && !empty($_POST["id"])) {
                             <label>Event Image</label> <input type="file" name="EventImage" class="form-control <?php echo (!empty($EventImage_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $EventImage; ?>"> <span class="invalid-feedback"><?php echo $EventImage_err; ?></span>
                         </div>
                         <div class="form-group">
+
                             <label>Event Date</label> <input type="datetime-local" name="EventDate" class="form-control <?php echo (!empty($EventDate_err)) ? 'is-invalid' : ''; ?>" value="<?php date_default_timezone_set('America/Toronto');
                                                                                                                                                                                             echo isset($EventDate) ? $EventDate : date('Y-m-d h:i'); ?>" min="<?php date_default_timezone_set('America/Toronto');
                                                                                                                                                                                                                                                                 echo date('Y-m-d h:i'); ?>"> <span class="invalid-feedback"><?php echo $EventImage_err; ?></span>
                         </div>
 
                         <input type="hidden" name="id" value="<?php echo $id; ?>" />
+
                         <input type="submit" class="btn btn-primary" value="Submit">
                         <a href="index.php" class="btn btn-secondary ml-2">Cancel</a>
                     </form>
